@@ -6,7 +6,6 @@ import path from "path";
 
 import route from "./routes";
 import { connectToDatabase } from "./services/database/database_service";
-import { CoinAPI } from "./services/maxcoin_api";
 
 const app: Express = express();
 const accessLogStream = fs.createWriteStream(
@@ -23,12 +22,6 @@ app.use(
   })
 );
 
-async function getCoins() {
-  const coinApi = new CoinAPI();
-  return coinApi.fetch();
-}
-
-getCoins().then((res) => console.log(res));
 /*
 async function initDB() {
   await connectToDatabase();
