@@ -13,6 +13,7 @@ const accessLogStream = fs.createWriteStream(
   { flags: "a" }
 );
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(
@@ -35,7 +36,7 @@ app.use("/", route());
 
 app.use((err: any, req: Request, res: Response, next: any) => {
   const statusCode = err.status || 500;
-  res.status(statusCode).send("err.message");
+  res.status(statusCode).send(err.message);
 });
 /*
 app.listen(process.env.PORT, () =>

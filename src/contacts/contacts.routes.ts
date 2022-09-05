@@ -1,10 +1,20 @@
 import { Router } from "express";
-import { listContactsAction } from "./controllers/contact_controller";
+import {
+  addContactController,
+  deleteContactController,
+  getContactDetailsAction,
+  getContactsAction,
+  updateContactController,
+} from "./controllers/contact_controller";
 
 const route = Router();
 
 export default function () {
-  route.get("/", listContactsAction);
+  route.get("/:id", getContactDetailsAction);
+  route.put("/:id", updateContactController);
+  route.delete("/:id", deleteContactController);
+  route.post("/", addContactController);
+  route.get("/", getContactsAction);
 
   return route;
 }

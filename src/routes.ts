@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import contactRoute from "./contacts/contacts.routes";
+import authRoute from "./auth/auth.routes";
 
 const route = Router();
 
@@ -10,6 +11,8 @@ export default function () {
   });
 
   route.use("/contacts", contactRoute());
+
+  route.use("/auth", authRoute());
 
   return route;
 }
