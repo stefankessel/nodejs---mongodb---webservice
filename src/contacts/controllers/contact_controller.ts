@@ -1,5 +1,6 @@
-import { Response, Request } from "express";
-import { ContactEntity, UpdateContactEntity } from "../models/contact_entity";
+import { Response, Request, NextFunction } from "express";
+import { UserEntity } from "../../auth/models/user_entity";
+import { ContactDTO } from "../models/contact_entity";
 import {
   addContact,
   deleteContact,
@@ -11,7 +12,7 @@ import {
 export const getContactsAction = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     const allContacts = await getAllContacts();
@@ -24,7 +25,7 @@ export const getContactsAction = async (
 export const getContactDetailsAction = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     const id = req?.params?.id;
@@ -38,11 +39,12 @@ export const getContactDetailsAction = async (
 export const addContactController = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
-    const newContact = req.body as ContactEntity;
-    const data = await addContact(newContact);
+    const newContact = req.body as ContactDTO;
+    const user: UserEntity = req.user;
+    await addContact(newContact, user);
     res.status(201).send({ message: "Successfully created a new contact" });
   } catch (err: any) {
     next(err);
@@ -52,19 +54,12 @@ export const addContactController = async (
 export const updateContactController = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   const id = req.params.id;
-  const updatedContact: UpdateContactEntity = {
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    email: req.body.email,
-    updated_at: new Date(),
-    created_at: req.body.created_at,
-  };
-
+  const user = req.user;
   try {
-    const data = await updateContact(updatedContact, id);
+    const data = await updateContact(req.body, id, user);
     if (data && data.modifiedCount) {
       res.json({ message: `successfull update of id: ${id}` });
     } else {
@@ -78,7 +73,7 @@ export const updateContactController = async (
 export const deleteContactController = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     const id = req.params.id;

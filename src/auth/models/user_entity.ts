@@ -1,24 +1,30 @@
 import { ObjectId } from "mongodb";
 import type { WithId, Document } from "mongodb";
 
-export interface IUserEntity extends WithId<Document> {
-  firstName: string;
-  lastName: string;
+export interface UserEntity extends WithId<Document> {
+  username: string;
   email: string;
-  hashedPassword: string;
+  password: string | undefined;
   created_at: Date;
-  isManager: boolean;
   id?: ObjectId;
 }
 
+export interface NewUserEntity {
+  username: string;
+  email: string;
+  password: string;
+  created_at: Date;
+  id?: ObjectId;
+}
+
+/*
 export class UserEntity implements WithId<Document> {
   constructor(
-    public firstName: string,
-    public lastName: string,
+    public username: string,
     public email: string,
     public hashedPassword: string,
     public created_at: Date,
-    public isManager: boolean = false,
     public _id: ObjectId
   ) {}
 }
+*/

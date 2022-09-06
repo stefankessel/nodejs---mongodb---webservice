@@ -1,6 +1,6 @@
 import { MongoClient, Collection, Db } from "mongodb";
 
-export let collections: { crm?: Collection } = {};
+export let collections: { crm?: Collection; users?: Collection } = {};
 
 export const connectToDatabase = async () => {
   const client: MongoClient = new MongoClient(
@@ -11,13 +11,13 @@ export const connectToDatabase = async () => {
 
   const db: Db = client.db(process.env.DB_NAME);
 
-  const crmCollection: Collection = db.collection(
-    process.env.COLLECTION_NAME!.toString()
-  );
+  const crmCollection: Collection = db.collection("contacts");
+  const userCollection: Collection = db.collection("users");
 
   collections.crm = crmCollection;
+  collections.users = userCollection;
 
   console.log(
-    `Successfully connected to database ${db.databaseName} and collection ${crmCollection.collectionName}`
+    `Successfully connected to database ${db.databaseName} and collections ${crmCollection.collectionName} and ${userCollection.collectionName}`
   );
 };
