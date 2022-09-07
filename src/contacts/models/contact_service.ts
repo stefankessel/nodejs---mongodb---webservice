@@ -22,7 +22,7 @@ export const addContact = async (contact: ContactDTO, user: UserEntity) => {
   address.push({
     street: contact.street ?? "",
     city: contact.city ?? "",
-    postal_code: contact.postal_code ?? 0o0,
+    postal_code: Number(contact.postal_code ?? 0o0),
   });
 
   const payload = { ...contact };
@@ -33,10 +33,11 @@ export const addContact = async (contact: ContactDTO, user: UserEntity) => {
   const newContact: ContactEntity = {
     ...payload,
     created_at: new Date(),
-    isPublic: contact.isPublic ?? true,
-    users_id: user._id,
+    isPublic: contact.isPublic === "true" ? true : false,
+    users_id: new ObjectId(user._id),
     addresses: address,
   };
+  console.log(newContact);
   const result = await collections.crm?.insertOne(newContact);
   return result;
 };
@@ -50,7 +51,7 @@ export const updateContact = async (
   address.push({
     street: updateContact.street ?? "",
     city: updateContact.city ?? "",
-    postal_code: updateContact.postal_code ?? 0,
+    postal_code: Number(updateContact.postal_code ?? 0o0),
   });
 
   const payload = { ...updateContact };
@@ -60,8 +61,9 @@ export const updateContact = async (
 
   const newContact: ContactEntity = {
     ...payload,
+    isPublic: updateContact.isPublic === "true" ? true : false,
     last_updated_at: new Date(),
-    users_id: user._id,
+    users_id: new ObjectId(user._id),
     addresses: address,
   };
   const query = { _id: new ObjectId(id) };

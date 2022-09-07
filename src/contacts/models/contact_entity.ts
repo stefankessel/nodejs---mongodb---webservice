@@ -10,7 +10,7 @@ export interface ContactEntity extends WithId<Document> {
   last_updated_at?: Date;
   addresses: Address[];
   isPublic: boolean;
-  users_id: UserEntity["_id"];
+  users_id: Object;
   id?: ObjectId;
 }
 /*
@@ -41,7 +41,7 @@ export interface ContactDTO extends WithId<Document> {
   street?: string;
   city?: string;
   postal_code?: number;
-  isPublic: boolean;
+  isPublic: string;
   users_id: UserEntity["_id"];
   id?: ObjectId;
 }

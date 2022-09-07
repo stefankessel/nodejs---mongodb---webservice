@@ -29,6 +29,7 @@ export const registerService = async (newUser: NewUserEntity) => {
     .update(newUser.password)
     .digest("hex");
   const user = { ...newUser, password: hashedPassword };
+  console.log(user);
   const res = await collections.users?.insertOne(user);
 
   return res;
