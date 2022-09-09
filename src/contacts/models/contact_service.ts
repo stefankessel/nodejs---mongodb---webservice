@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { userInfo } from "os";
 import { UserEntity } from "../../auth/models/user_entity";
 import { collections } from "../../services/database/database_service";
 import { Address, ContactDTO, ContactEntity } from "./contact_entity";
@@ -6,7 +7,22 @@ import { Address, ContactDTO, ContactEntity } from "./contact_entity";
 export const getAllContacts = async (): Promise<ContactEntity[]> => {
   console.time("find operation for mongodb from backend");
   const docs = (await collections.crm?.find({}).toArray()) as ContactEntity[];
+
   console.timeEnd("find operation for mongodb from backend");
+
+  return docs;
+};
+
+export const getAllPublicContacts = async () => {
+  let docs = [];
+  console.time("find operation for mongodb from backend");
+  const pipeline = [{ $match: { isPublic: true } }, { $project: { _id: 0 } }];
+  const aggCursor = await collections.crm!.aggregate(pipeline);
+  console.timeEnd("find operation for mongodb from backend");
+  for await (const doc of aggCursor) {
+    docs.push(doc);
+  }
+
   return docs;
 };
 
@@ -73,8 +89,13 @@ export const updateContact = async (
   return result;
 };
 
-export const deleteContact = async (id: string) => {
-  const query = { _id: new ObjectId(id) };
-  const result = await collections.crm?.deleteOne(query);
-  return result;
+export const deleteContact = async (id: string, user: UserEntity) => {
+  const contact = await getContactById(id);
+  if (contact.users_id.toString() === user._id.toString()) {
+    const query = { _id: new ObjectId(id) };
+    const result = await collections.crm?.deleteOne(query);
+    return result;
+  } else {
+    throw new Error("not authorized to delete contact");
+  }
 };

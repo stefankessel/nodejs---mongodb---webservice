@@ -77,7 +77,7 @@ export const deleteContactController = async (
 ) => {
   try {
     const id = req.params.id;
-    const data = await deleteContact(id);
+    const data = await deleteContact(id, req.user);
     if (!data?.deletedCount) {
       res.status(404).send(`id ${id} does not exist`);
     } else if (data.deletedCount) {
