@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import { userInfo } from "os";
 import { UserEntity } from "../../auth/models/user_entity";
 import { collections } from "../../services/database/database_service";
 import { Address, ContactDTO, ContactEntity } from "./contact_entity";
