@@ -1,6 +1,10 @@
 import { buildSchema } from "graphql";
 import { graphqlHTTP } from "express-graphql";
-import { getAllContacts } from "./contacts/models/contact_service";
+import {
+  getAllContacts,
+  getContactById,
+} from "./contacts/models/contact_service";
+import { ObjectId } from "mongodb";
 
 const schema = buildSchema(`
     type Contact{
@@ -11,8 +15,8 @@ const schema = buildSchema(`
         last_updated_at: String
         addresses: [Address]
         isPublic: Boolean
-        users_id: Int
-        id: Int!
+        users_id: ID
+        _id: ID
     }
     type Address{
         street: String
@@ -21,12 +25,18 @@ const schema = buildSchema(`
     }
 
     type Query{
-        contact: [Contact]
+        contact(id: String): [Contact]
     }
 `);
 
 const rootValue = {
-  contact: () => getAllContacts(),
+  contact: async ({ id }: any) => {
+    if (id) {
+      return Array(getContactById(id));
+    } else {
+      return getAllContacts();
+    }
+  },
 };
 
 export default graphqlHTTP({
