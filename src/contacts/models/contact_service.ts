@@ -32,7 +32,10 @@ export const getContactById = async (id: string): Promise<ContactEntity> => {
   return doc;
 };
 
-export const addContact = async (contact: ContactDTO, user: UserEntity) => {
+export const addContact = async (
+  contact: ContactDTO,
+  user: UserEntity
+): Promise<ContactEntity | undefined> => {
   const address: Address[] = [];
   address.push({
     street: contact.street ?? "",
@@ -52,8 +55,9 @@ export const addContact = async (contact: ContactDTO, user: UserEntity) => {
     users_id: new ObjectId(user._id),
     addresses: address,
   };
-  console.log(newContact);
-  const result = await collections.crm?.insertOne(newContact);
+  const result = (await collections.crm?.insertOne(newContact)) as
+    | ContactEntity
+    | undefined;
   return result;
 };
 

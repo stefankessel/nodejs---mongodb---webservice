@@ -16,7 +16,11 @@ export default function () {
 
   route.use("/auth", authRoute());
 
-  route.use("/graphql", graphql);
+  route.use(
+    "/graphql",
+    (req, res, next) => next(console.log(req.user)),
+    graphql
+  );
 
   return route;
 }
